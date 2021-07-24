@@ -14,7 +14,24 @@ import java.util.Scanner;
  * 支配(dominate):if 向量a的每一个维度都小于等于向量b的对应维度，且不全等，则b dominates a;
  *                相等向量间互不支配
  * 
- * BNL：遍历输入集中的每一个点，与其它所有点比较，被某一个点支配，则它不是SP，否则加入输出集
+ * Spec:
+ * 
+ * skylinequery(String inputFileName, String alg)
+ * inputFileName指定数据文件，文件中每一行代表一个十维向量，所有维度都是Double类型，两个数据之间用空格隔开，两个向量间用换行符隔开
+ * alg指定使用的算法:BNL或SFS，其它输入情况使用蛮力法
+ * 
+ * getSPList()
+ * 获取SP集合
+ * 
+ * getListSize()
+ * 获取输入点集的大小
+ * 
+ * getRunTimes()
+ * 获取运行时间，单位s
+ * 
+ * getRunTimem()
+ * 获取运行时间，单位ms
+ * 
  */
 
 public class skylinequery {
@@ -182,6 +199,7 @@ public class skylinequery {
         runTimes = (double) runTimem / 1000;
     }
 
+    //蛮力法
     private void ViolentAlgorithm() {
         long startTime = System.currentTimeMillis();
 
@@ -205,6 +223,11 @@ public class skylinequery {
 
 }
 
+/**
+ * 十维向量
+ * 定义了dominate关系
+ * 可比较，按照所有维度之和
+ */
 class Node implements Comparable<Node> {
     public final double[] fields = new double[10];
     private double sum;
