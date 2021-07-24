@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.sourcePaths": [
+			".\\src",
+			".\\test"
+		],
+		"java.project.outputPath": ".\\bin",
+		"java.project.referencedLibraries": [
+			"lib/**/*.jar",
+			"d:\\JUnit\\junit-4.13.2.jar"
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "java",
+				"name": "Launch Current File",
+				"request": "launch",
+				"mainClass": "${file}"
+			}
+		]
+	}
+}
