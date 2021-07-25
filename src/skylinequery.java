@@ -32,6 +32,9 @@ import java.util.Scanner;
  * getRunTimem()
  * 获取运行时间，单位ms
  * 
+ * checkCorrectness()
+ * 检查运行结果正确性，正确则返回true
+ * 
  */
 
 public class skylinequery {
@@ -176,28 +179,50 @@ public class skylinequery {
         long startTime = System.currentTimeMillis();
 
         PriorityQueue<Node> pq = new PriorityQueue<>(nodeList);
-        List<Node> window = new ArrayList<>();
+        //List<Node> window = new ArrayList<>();
 
-        window.add(pq.poll());//将最小点加入到SP集合
+        SPList.add(pq.poll());//将最小点加入到SP集合
 
         while (!pq.isEmpty()) {
             Node newnode = pq.poll();//取堆中最小点
 
             boolean AddNewNode = true;
-            for (Node node : window) {
+            for (Node node : SPList) {
                 if (newnode.IsDominatedBy(node)) {//被一个SP支配，则不是SP
                     AddNewNode = false;
                     break;
                 }
             }
             if (AddNewNode)
-                window.add(newnode);
+                SPList.add(newnode);
         }
-        SPList.addAll(window);
+        //SPList.addAll(window);
         long endTime = System.currentTimeMillis();
         runTimem = (endTime - startTime);
         runTimes = (double) runTimem / 1000;
     }
+
+    /**
+     * PriorityQueue<Node> pq = new PriorityQueue<>(nodeList);
+        List<Node> window = new ArrayList<>();
+    
+        SPList.add(pq.poll());//将最小点加入到SP集合
+    
+        while (!pq.isEmpty()) {
+            Node newnode = pq.poll();//取堆中最小点
+    
+            boolean AddNewNode = true;
+            for (Node node : SPList) {
+                if (newnode.IsDominatedBy(node)) {//被一个SP支配，则不是SP
+                    AddNewNode = false;
+                    break;
+                }
+            }
+            if (AddNewNode)
+                SPList.add(newnode);
+        }
+        //SPList.addAll(window);
+     */
 
     //蛮力法
     private void ViolentAlgorithm() {
@@ -221,12 +246,40 @@ public class skylinequery {
         runTimes = (double) runTimem / 1000;
     }
 
+    /**
+     * 检查正确性
+     * 正确返回true
+     * @return
+     */
+    public boolean checkCorrectness() {
+        int size = nodeList.size();
+        for (int i = 0; i < size; i++) {
+            boolean IsSP = true;
+            for (int j = 0; j < size; j++) {
+                //被支配则不是SP
+                if (nodeList.get(i).IsDominatedBy(nodeList.get(j))) {
+                    IsSP = false;
+                    if (SPList.contains(nodeList.get(i)))
+                        return false;
+                    break;
+                }
+            }
+            if (IsSP)
+                if (!SPList.contains(nodeList.get(i)))
+                    return false;
+        }
+        return true;
+    }
+
 }
 
 /**
  * 十维向量
  * 定义了dominate关系
  * 可比较，按照所有维度之和
+ * 
+ * IsDominatedBy(Node that)
+ * 若this被that支配则返回true，否则返回false
  */
 class Node implements Comparable<Node> {
     public final double[] fields = new double[10];
@@ -249,6 +302,28 @@ class Node implements Comparable<Node> {
 
     public double getSum() {
         return sum;
+    }
+
+    private boolean sameValue(Node that) {
+        for (int i = 0; i < fields.length; i++) {
+            if (!Double.valueOf(this.fields[i]).equals(Double.valueOf(that.fields[i])))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        return that != null && this.sameValue((Node) that);
+    }
+
+    @Override
+    public int hashCode() {
+        int re = 17;
+        for (double d : fields) {
+            re += 31 * re + (int) (d * 10);
+        }
+        return re;
     }
 
     @Override
